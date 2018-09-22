@@ -48,18 +48,20 @@ def trader(rough, smooth, exchange, symbol):
         print("==============================================")
 
         if(message['type'] == 'book' and message['symbol'] == symbol):
-            hist = np.append(hist[1:], np.array(message['sell'][0]))
+            hist = np.append(hist[1:], np.array(message['sell'][0][0]))
 
         if 0 not in hist:
             rough_average = hist[-rough:].mean()
             smooth_average = hist.mean()
-            
+
             if(rough_average < smooth_average):
                 write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "BUY", "price": hist[-1], "size": 1})
+                print("tryna buy @ " + hist[-1])
             else:
                 write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": hist[-1], "size": 1})
-        
-        
+                print("tryna sell @ " + hist[-1])
+
+
         time.sleep(1)
 
 
