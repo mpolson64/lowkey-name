@@ -58,7 +58,7 @@ def ctrader(exchange, rough, smooth, cooldown):
         print("==============================================")
 
         if(message['type'] == 'trade' and message['symbol'] in trading):
-            hist[message['symbol']] = np.append(hist[message['symbol']][1:], np.array(message['price'][0][0]))
+            hist[message['symbol']] = np.append(hist[message['symbol']][1:], np.array(message['price']))
 
         for symbol in trading:
             if 0 not in hist[symbol]:
