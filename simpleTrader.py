@@ -41,9 +41,11 @@ def trader(rough, smooth, exchange, symbol):
     hist = np.zeros(smooth)
 
     while 1:
-        print(hist)
-
         message = read_from_exchange(exchange)
+
+        print(message)
+        print(hist)
+        print("==============================================")
 
         if(message['type'] == 'book' and message['symbol'] == symbol):
             hist = np.append(hist[1:], np.array(message['sell'][0]))
