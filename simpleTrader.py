@@ -34,7 +34,7 @@ def main():
 
     print(hello_res)
 
-    trader(2, 5, exchange, 'AAPL')
+    trader(5, 10, exchange, 'AAPL')
 
 
 def trader(rough, smooth, exchange, symbol):
@@ -62,9 +62,7 @@ def trader(rough, smooth, exchange, symbol):
                 write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
                 print("tryna sell @ " + str(hist[-1]))
 
-
-        time.sleep(0.1)
-
+	time.sleep(0.1)
 
 if __name__ == "__main__":
     main()
