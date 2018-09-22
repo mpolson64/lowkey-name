@@ -34,8 +34,7 @@ def main():
 
     print(hello_res)
 
-    # ctrader(exchange, 5, 10, 0.125)
-    trader(exchange, "AAPL", 5, 10, 0.125)
+    ctrader(exchange, 5, 10, 0.125)
 
 def ctrader(exchange, rough, smooth, cooldown):
     trading = {'AAPL', 'GOOG', 'MSFT'}
@@ -69,14 +68,14 @@ def ctrader(exchange, rough, smooth, cooldown):
                 if(rough_average < smooth_average and time_since_last_order > cooldown):
                     trade_id = random.randint(0, 2 ** 31)
 
-                    write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": int(hist[symbol][-1]), "size": 1})
+                    write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": rough_average, "size": 1})
                     time_since_last_order = 0
 
                     print("tryna buy " + symbol + " @ " + str(hist[symbol][-1]))
                 elif(rough_average > smooth_average and time_since_last_order > cooldown):
                     trade_id = random.randint(0, 2 ** 31)
 
-                    write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[symbol][-1]), "size": 1})
+                    write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": rough_average, "size": 1})
                     time_since_last_order = 0
 
                     print("tryna sell " + symbol + " @ " + str(hist[symbol][-1]))

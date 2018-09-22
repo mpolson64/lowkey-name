@@ -7,7 +7,7 @@ import json
 
 team_name = 'MANDMANDM'
 
-test_mode = True
+test_mode = False
 test_exchange_index = 0
 
 prod_exchange_hostname = 'production'
