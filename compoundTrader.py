@@ -52,7 +52,8 @@ def ctrader(exchange, rough, smooth, cooldown):
         t0 = time.time()
         message = read_from_exchange(exchange)
 
-        print(message['type'], message)
+        if(message['type'] == 'error'):
+            print(message)
         print(hist)
         print(time_since_last_order)
         print("==============================================")
