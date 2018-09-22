@@ -37,7 +37,6 @@ def main():
 
 def trader(exchange, symbol, cooldown):
     t0, t1 = 0, 0
-    hist = np.zeros(smooth)
     time_since_last_order = cooldown
     
     while 1:
@@ -49,10 +48,11 @@ def trader(exchange, symbol, cooldown):
         print(time_since_last_order)
         print("==============================================")
         
-        if(message['book'] and message['symbol'] == symbol):
+        if(message['type'] == 'book' and message['symbol'] == symbol and time_since_last_order > cooldown):
             trade_id = random.randint(0, 2 ** 32)
-            write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "SELL", "price": message['sell'][0][0] - 1, "size": 1})
-            write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": message['buy'][0][0] + 1, "size": 1})
+            write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "SELL", "price": message['sell'][0][0] + 1, "size": 1})
+            write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": message['buy'][0][0] - 1, "size": 1})
+            time_since_last_order = 0
 
         t1 = time.time()
 
