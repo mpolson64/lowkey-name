@@ -33,7 +33,10 @@ def main():
     print(hello_res)
 
     while 1:
-        print(read_from_exchange(exchange))
+        res = read_from_exchange(exchange)
+        if res['type'] == 'book':
+            if res['symbol'] == 'AAPL':
+                print(res)
 
 
 if __name__ == "__main__":
