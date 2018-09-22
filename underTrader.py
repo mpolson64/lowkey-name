@@ -32,7 +32,7 @@ def main():
     write_to_exchange(exchange, {"type": "hello", "team": team_name})
     hello_res = read_from_exchange(exchange)
 
-    trader(exchange, {"AAPL", "GOOG", "MSFT"}, 0.5)
+    trader(exchange, {"AAPL", "GOOG", "MSFT"}, 0.125)
 
 
 def trader(exchange, symbols, cooldown):
@@ -49,10 +49,10 @@ def trader(exchange, symbols, cooldown):
         print("==============================================")
        
         for symbol in symbols:
-            if(message['type'] == 'book' and message['symbol'] == symbol and time_since_last_order > cooldown and abs(message['sell'][0][0] - message['buy'][0][0]) > 2):
+            if(message['type'] == 'book' and message['symbol'] == symbol and len(message['buy']) > 0 and len(message['sell']) > 0 and time_since_last_order > cooldown and abs(message['sell'][0][0] - message['buy'][0][0]) > 2):
                 trade_id = random.randint(0, 2 ** 32)
-                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "SELL", "price": message['sell'][0][0] + 1, "size": 1})
-                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": message['buy'][0][0] - 1, "size": 1})
+                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "SELL", "price": message['sell'][0][0] + 1, "size": 3})
+                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": message['buy'][0][0] - 1, "size": 3})
                 time_since_last_order = 0
 
             t1 = time.time()

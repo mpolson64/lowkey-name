@@ -7,7 +7,7 @@ import json
 
 team_name = 'MANDMANDM'
 
-test_mode = True
+test_mode = False
 test_exchange_index = 0
 
 prod_exchange_hostname = 'production'
@@ -32,49 +32,30 @@ def main():
     write_to_exchange(exchange, {"type": "hello", "team": team_name})
     hello_res = read_from_exchange(exchange)
 
-    print(hello_res)
-
-    trader(exchange, "AAPL", 5, 10, 0.5)
+    trader(exchange, {"AAPL", "GOOG", "MSFT"}, 0.125)
 
 
-def trader(exchange, symbol, rough, smooth, cooldown):
+def trader(exchange, symbols, cooldown):
     t0, t1 = 0, 0
-    hist = np.zeros(smooth)
     time_since_last_order = cooldown
     
     while 1:
-        time_since_last_order += (t1 - t0)  # * 100
+        time_since_last_order += (t1 - t0)
         t0 = time.time()
         message = read_from_exchange(exchange)
 
         print(message['type'], message)
-        print(hist)
         print(time_since_last_order)
         print("==============================================")
-
-        if(message['type'] == 'book' and message['symbol'] == symbol):
-            hist = np.append(hist[1:], np.array(message['sell'][0][0]))
-
-        if 0 not in hist:
-            rough_average = hist[-rough:].mean()
-            smooth_average = hist.mean()
-
-            if(rough_average < smooth_average and time_since_last_order > cooldown):
-                trade_id = random.randint(0, 2 ** 31)
-
-                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": int(hist[-1]), "size": 1})
-                time_since_last_order = 0
-                
-                print("tryna buy @ " + str(hist[-1]))
-            elif(rough_average > smooth_average and time_since_last_order > cooldown):
-                trade_id = random.randint(0, 2 ** 31)
-
-                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
+       
+        for symbol in symbols:
+            if(message['type'] == 'book' and message['symbol'] == symbol and len(message['buy']) > 0 and len(message['sell']) > 0 and time_since_last_order > cooldown and abs(message['sell'][0][0] - message['buy'][0][0]) > 2):
+                trade_id = random.randint(0, 2 ** 32)
+                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "SELL", "price": message['sell'][0][0] + 1, "size": 3})
+                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": message['buy'][0][0] - 1, "size": 3})
                 time_since_last_order = 0
 
-                print("tryna sell @ " + str(hist[-1]))
-
-        t1 = time.time()
+            t1 = time.time()
 
 
 if __name__ == "__main__":
