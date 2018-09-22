@@ -34,7 +34,7 @@ def main():
 
     print(hello_res)
 
-    trader(5, 20, exchange, 'AAPL')
+    trader(2, 5, exchange, 'AAPL')
 
 
 def trader(rough, smooth, exchange, symbol):
@@ -43,7 +43,7 @@ def trader(rough, smooth, exchange, symbol):
     while 1:
         message = read_from_exchange(exchange)
 
-        print(message)
+        print(message['type'], message)
         print(hist)
         print("==============================================")
 
@@ -55,9 +55,9 @@ def trader(rough, smooth, exchange, symbol):
             smooth_average = hist.mean()
             
             if(rough_average < smooth_average):
-                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(), "symbol": symbol, "dir": "BUY", "price": hist[-1], "size": 1})
+                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "BUY", "price": hist[-1], "size": 1})
             else:
-                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(), "symbol": symbol, "dir": "SELL", "price": hist[-1], "size": 1})
+                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": hist[-1], "size": 1})
         
         
         time.sleep(1)
