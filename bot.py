@@ -32,16 +32,17 @@ def main():
 
     print(hello_res)
 
+    high_bid = None
+    low_ask = None
+
     while 1:
-        high_bid = None
-        low_ask = None
 
         res = read_from_exchange(exchange)
         if res['type'] == 'book':
             if res['symbol'] == 'AAPL':
                 high_bid = res['buy'][0]
                 low_ask = res['sell'][0]
-        print("AAPL " + high_bid + " @ " + low_ask)
+        print("AAPL " + str(high_bid) + " @ " + str(low_ask))
 
 if __name__ == "__main__":
     main()
