@@ -32,6 +32,9 @@ def main():
 
     print(hello_res)
 
+    while 1:
+        print(read_from_exchange(exchange))
+
 
 if __name__ == "__main__":
     main()
