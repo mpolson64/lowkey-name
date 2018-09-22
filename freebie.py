@@ -37,46 +37,7 @@ def main():
     while 1:
         write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": "BOND", "dir": "BUY", "price": 999, "size": 100})
         write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": "BOND", "dir": "SELL", "price": 1001,"size": 100})
-
-
-def trader(exchange, symbol, rough, smooth, cooldown):
-    t0, t1 = 0, 0
-    hist = np.zeros(smooth)
-    time_since_last_order = cooldown
-    
-    while 1:
-        time_since_last_order += (t1 - t0)  # * 100
-        t0 = time.time()
-        message = read_from_exchange(exchange)
-
-        print(message['type'], message)
-        print(hist)
-        print(time_since_last_order)
-        print("==============================================")
-
-        if(message['type'] == 'book' and message['symbol'] == symbol):
-            hist = np.append(hist[1:], np.array(message['sell'][0][0]))
-
-        if 0 not in hist:
-            rough_average = hist[-rough:].mean()
-            smooth_average = hist.mean()
-
-            if(rough_average < smooth_average and time_since_last_order > cooldown):
-                trade_id = random.randint(0, 2 ** 31)
-
-                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": int(hist[-1]), "size": 1})
-                time_since_last_order = 0
-                
-                print("tryna buy @ " + str(hist[-1]))
-            elif(rough_average > smooth_average and time_since_last_order > cooldown):
-                trade_id = random.randint(0, 2 ** 31)
-
-                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
-                time_since_last_order = 0
-
-                print("tryna sell @ " + str(hist[-1]))
-
-        t1 = time.time()
+        time.sleep(1)
 
 
 if __name__ == "__main__":
