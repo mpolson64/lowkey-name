@@ -56,10 +56,10 @@ def trader(rough, smooth, exchange, symbol):
 
             if(rough_average < smooth_average):
                 write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "BUY", "price": hist[-1], "size": 1})
-                print("tryna buy @ " + hist[-1])
+                print("tryna buy @ " + str(hist[-1]))
             else:
                 write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": hist[-1], "size": 1})
-                print("tryna sell @ " + hist[-1])
+                print("tryna sell @ " + str(hist[-1]))
 
 
         time.sleep(1)
