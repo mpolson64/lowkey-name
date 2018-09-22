@@ -34,7 +34,8 @@ def main():
 
     print(hello_res)
 
-    ctrader(exchange, 5, 10, 0.125)
+    # ctrader(exchange, 5, 10, 0.125)
+    trader(exchange, "AAPL", 5, 10, 0.125)
 
 def ctrader(exchange, rough, smooth, cooldown):
     trading = {'AAPL', 'GOOG', 'MSFT'}
@@ -57,8 +58,8 @@ def ctrader(exchange, rough, smooth, cooldown):
         print(time_since_last_order)
         print("==============================================")
 
-        if(message['type'] == 'book' and message['symbol'] in trading and len(message['sell']) > 0):
-            hist[message['symbol']] = np.append(hist[message['symbol']][1:], np.array(message['sell'][0][0]))
+        if(message['type'] == 'trade' and message['symbol'] in trading):
+            hist[message['symbol']] = np.append(hist[message['symbol']][1:], np.array(message['price'][0][0]))
 
         for symbol in trading:
             if 0 not in hist[symbol]:
@@ -98,8 +99,8 @@ def trader(exchange, symbol, rough, smooth, cooldown):
         print(time_since_last_order)
         print("==============================================")
 
-        if(message['type'] == 'book' and message['symbol'] == symbol):
-            hist = np.append(hist[1:], np.array(message['sell'][0][0]))
+        if(message['type'] == 'trade' and message['symbol'] == symbol):
+            hist = np.append(hist[1:], np.array(message['price'][0][0]))
 
         if 0 not in hist:
             rough_average = hist[-rough:].mean()
