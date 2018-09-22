@@ -34,10 +34,10 @@ def main():
 
     print(hello_res)
 
-    ctrader(exchange, 5, 10, 0.5)
+    ctrader(exchange, 5, 10, 0.125)
 
 def ctrader(exchange, rough, smooth, cooldown):
-    trading = {'APPL', 'GOOG', 'MSFT'}
+    trading = {'AAPL', 'GOOG', 'MSFT'}
 
     t0, t1 = 0, 0
     time_since_last_order = cooldown
@@ -57,7 +57,7 @@ def ctrader(exchange, rough, smooth, cooldown):
         print(time_since_last_order)
         print("==============================================")
 
-        if(message['type'] == 'book' and message['symbol'] in trading):
+        if(message['type'] == 'book' and message['symbol'] in trading and len(message['sell']) > 0):
             hist[message['symbol']] = np.append(hist[message['symbol']][1:], np.array(message['sell'][0][0]))
 
         for symbol in trading:
