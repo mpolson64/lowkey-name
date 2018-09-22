@@ -34,9 +34,9 @@ def main():
 
     print(hello_res)
 
-    trader(exchange, "AAPL", 5, 10, 0.5)
+    ctrader(exchange, 5, 10, 0.5)
 
-def trader(exchange, rough, smooth, cooldown):
+def ctrader(exchange, rough, smooth, cooldown):
     trading = {'APPL', 'GOOG', 'MSFT'}
 
     t0, t1 = 0, 0
@@ -62,23 +62,23 @@ def trader(exchange, rough, smooth, cooldown):
 
         for symbol in trading:
             if 0 not in hist[symbol]:
-                rough_average = hist[-rough:].mean()
-                smooth_average = hist.mean()
+                rough_average = hist[symbol][-rough:].mean()
+                smooth_average = hist[symbol].mean()
 
                 if(rough_average < smooth_average and time_since_last_order > cooldown):
                     trade_id = random.randint(0, 2 ** 31)
 
-                    write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": int(hist[-1]), "size": 1})
+                    write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": int(hist[symbol][-1]), "size": 1})
                     time_since_last_order = 0
 
-                    print("tryna buy " + symbol + " @ " + str(hist[-1]))
+                    print("tryna buy " + symbol + " @ " + str(hist[symbol][-1]))
                 elif(rough_average > smooth_average and time_since_last_order > cooldown):
                     trade_id = random.randint(0, 2 ** 31)
 
-                    write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
+                    write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[symbol][-1]), "size": 1})
                     time_since_last_order = 0
 
-                    print("tryna sell " + symbol + " @ " + str(hist[-1]))
+                    print("tryna sell " + symbol + " @ " + str(hist[symbol][-1]))
 
         t1 = time.time()
 
