@@ -61,7 +61,7 @@ def trader(exchange, symbol, rough, smooth, max_orders_open):
                 open_orders.append(trade_id)
                 if(len(open_orders) > max_orders_open):
                     print("BIG STALE")
-                    write_to_exchange("type": "cancel", "order_id": open_orders[0])
+                    write_to_exchange(exchange, {"type": "cancel", "order_id": open_orders[0]})
                     open_orders = open_orders[1:]
 
                 write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": int(hist[-1]), "size": 1})
@@ -73,10 +73,10 @@ def trader(exchange, symbol, rough, smooth, max_orders_open):
                 open_orders.append(trade_id)
                 if(len(open_orders) > max_orders_open):
                     print("BIG STALE")
-                    write_to_exchange("type": "cancel", "order_id": open_orders[0])
+                    write_to_exchange(exchange, {"type": "cancel", "order_id": open_orders[0]})
                     open_orders = open_orders[1:]
 
-               write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
+                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
                 print("tryna sell @ " + str(hist[-1]))
 
             time.sleep(0.1)
