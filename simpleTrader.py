@@ -34,13 +34,13 @@ def main():
 
     print(hello_res)
 
-    trader(5, 10, exchange, 'AAPL')
+    trader(exchange, "AAPL", 5, 10, 10)
 
 
-def trader(rough, smooth, exchange, symbol):
+def trader(exchange, symbol, rough, smooth, max_orders_open):
     hist = np.zeros(smooth)
-
-    write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": "BOND", "dir": "BUY", "price": 1000, "size": 1})
+    open_orders = []
+    
     while 1:
         message = read_from_exchange(exchange)
 
@@ -56,13 +56,30 @@ def trader(rough, smooth, exchange, symbol):
             smooth_average = hist.mean()
 
             if(rough_average < smooth_average):
-                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "BUY", "price": int(hist[-1]), "size": 1})
+                trade_id = random.randint(0, 2 ** 31)
+
+                open_orders.append(trade_id)
+                if(len(open_orders) > max_orders_open):
+                    print("BIG STALE")
+                    write_to_exchange("type": "cancel", "order_id": open_orders[0])
+                    open_orders = open_orders[1:]
+
+                write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": int(hist[-1]), "size": 1})
+                
                 print("tryna buy @ " + str(hist[-1]))
             elif(rough_average > smooth_average):
-                write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
+                trade_id = random.randint(0, 2 ** 31)
+
+                open_orders.append(trade_id)
+                if(len(open_orders) > max_orders_open):
+                    print("BIG STALE")
+                    write_to_exchange("type": "cancel", "order_id": open_orders[0])
+                    open_orders = open_orders[1:]
+
+               write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
                 print("tryna sell @ " + str(hist[-1]))
 
-	time.sleep(0.1)
+            time.sleep(0.1)
 
 if __name__ == "__main__":
     main()
