@@ -8,7 +8,7 @@ import json
 team_name = 'MANDMANDM'
 
 test_mode = True
-test_exchange_index = 1
+test_exchange_index = 0
 
 prod_exchange_hostname = 'production'
 
@@ -63,7 +63,7 @@ def trader(rough, smooth, exchange, symbol):
                 print("tryna sell @ " + str(hist[-1]))
 
 
-        time.sleep(1)
+        time.sleep(0.1)
 
 
 if __name__ == "__main__":
