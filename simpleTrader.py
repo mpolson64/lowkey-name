@@ -39,7 +39,7 @@ def main():
 
 def trader(exchange, symbol, rough, smooth, max_orders_open):
     hist = np.zeros(smooth)
-    open_orders = []
+    last_order_id = 0
     
     while 1:
         message = read_from_exchange(exchange)
@@ -56,25 +56,19 @@ def trader(exchange, symbol, rough, smooth, max_orders_open):
             smooth_average = hist.mean()
 
             if(rough_average < smooth_average):
-                trade_id = random.randint(0, 2 ** 31)
+                write_to_exchange(exchange, {"type": "cancel", "order_id": last_order_id})
 
-                open_orders.append(trade_id)
-                if(len(open_orders) > max_orders_open):
-                    print("BIG STALE")
-                    write_to_exchange(exchange, {"type": "cancel", "order_id": open_orders[0]})
-                    open_orders = open_orders[1:]
+                trade_id = random.randint(0, 2 ** 31)
+                last_order_id = trade_id
 
                 write_to_exchange(exchange, {"type": "add", "order_id": trade_id, "symbol": symbol, "dir": "BUY", "price": int(hist[-1]), "size": 1})
                 
                 print("tryna buy @ " + str(hist[-1]))
             elif(rough_average > smooth_average):
-                trade_id = random.randint(0, 2 ** 31)
+                write_to_exchange(exchange, {"type": "cancel", "order_id": last_order_id})
 
-                open_orders.append(trade_id)
-                if(len(open_orders) > max_orders_open):
-                    print("BIG STALE")
-                    write_to_exchange(exchange, {"type": "cancel", "order_id": open_orders[0]})
-                    open_orders = open_orders[1:]
+                trade_id = random.randint(0, 2 ** 31)
+                last_order_id = trade_id
 
                 write_to_exchange(exchange, {"type": "add", "order_id": random.randint(0, 2 ** 31), "symbol": symbol, "dir": "SELL", "price": int(hist[-1]), "size": 1})
                 print("tryna sell @ " + str(hist[-1]))
