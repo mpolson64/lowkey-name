@@ -46,7 +46,7 @@ def trader(rough, smooth, exchange, symbol):
         message = read_from_exchange(exchange)
 
         if(message['type'] == 'book' and message['symbol'] == symbol):
-            hist = np.append(rough_hist[1:], np.array(message['sell'][0]))
+            hist = np.append(hist[1:], np.array(message['sell'][0]))
 
         if 0 not in hist:
             rough_average = hist[-rough:].mean()
